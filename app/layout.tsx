@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://emgee-contracting-website.vercel.app"),
+  metadataBase: new URL("https://emgee-contracting.vercel.app"),
   title: "Emgee Contracting | Trusted Roofing Contractor in Lakewood, NJ",
   description:
     "Professional roofing, siding & gutter services in Lakewood, NJ. 10+ years experience, free inspections, and quality craftsmanship. Call (732) 806-5656.",
