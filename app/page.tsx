@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 /* ─────────────────────────────────────────────
@@ -11,6 +11,7 @@ const PHONE = "(732) 806-5656";
 const PHONE_HREF = "tel:7328065656";
 const EMAIL = "Office@emgeeexteriors.com";
 const ADDRESS = "1522 Laguna Ln, Lakewood, NJ 08701";
+const LICENSE = "13VH07668500";
 const GOOGLE_MAPS =
   "https://www.google.com/maps/search/?api=1&query=Emgee+Contracting+Lakewood+NJ";
 
@@ -35,7 +36,7 @@ const PROCESS_STEPS = [
   {
     num: "01",
     title: "Free Inspection",
-    desc: "We thoroughly inspect your roof, document any issues, and give you an honest assessment -- no pressure, no obligation.",
+    desc: "We thoroughly inspect your roof, document any issues, and give you an honest assessment — no pressure, no obligation.",
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -55,7 +56,7 @@ const PROCESS_STEPS = [
   {
     num: "03",
     title: "Expert Installation",
-    desc: "Our experienced crew handles every detail -- from tear-off to final shingle -- with precision and care.",
+    desc: "Our experienced crew handles every detail — from tear-off to final shingle — with precision and care.",
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1-3.06a1.5 1.5 0 01-.56-2.04l3.56-5.93A1.5 1.5 0 0110.6 3.5h2.8a1.5 1.5 0 011.28.64l3.56 5.93a1.5 1.5 0 01-.56 2.04l-5.1 3.06a1.5 1.5 0 01-1.56 0z" />
@@ -183,7 +184,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Are you licensed and insured?",
-    a: "Absolutely. Emgee Contracting is fully licensed in the State of New Jersey and carries comprehensive general liability and workers' compensation insurance. We're happy to provide documentation upon request.",
+    a: `Absolutely. Emgee Contracting is fully licensed (NJ HIC #${LICENSE}) and carries comprehensive general liability and workers' compensation insurance. We're happy to provide documentation upon request.`,
   },
   {
     q: "Do you handle insurance claims?",
@@ -194,32 +195,6 @@ const FAQ_ITEMS = [
     a: "We serve Lakewood, Toms River, Jackson, Brick, Howell, Freehold, and surrounding Ocean and Monmouth County communities. Contact us to confirm coverage in your area.",
   },
 ];
-
-/* ─────────────────────────────────────────────
-   INTERSECTION OBSERVER HOOK
-   ───────────────────────────────────────────── */
-
-function useFadeUp() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("visible");
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return ref;
-}
 
 /* ─────────────────────────────────────────────
    STAR RATING COMPONENT
@@ -251,23 +226,37 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Scroll detection for nav
+  // Mark document as JS-loaded for animation system
+  useEffect(() => {
+    document.documentElement.classList.add("js-loaded");
+  }, []);
+
+  // IntersectionObserver for all fade-up elements
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    const elements = document.querySelectorAll(".fade-up");
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Scroll detection for nav background
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Refs for fade-up sections
-  const statsRef = useFadeUp();
-  const processRef = useFadeUp();
-  const servicesRef = useFadeUp();
-  const galleryRef = useFadeUp();
-  const reviewsRef = useFadeUp();
-  const faqRef = useFadeUp();
-  const ctaRef = useFadeUp();
-
-  // Smooth scroll handler (avoids hash-anchor auto-scroll bug)
+  // Smooth scroll handler
   const scrollTo = (href: string) => {
     setMobileMenu(false);
     const el = document.querySelector(href);
@@ -374,21 +363,21 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-12 sm:py-16 lg:py-24">
             {/* Left: Text */}
             <div className="order-2 lg:order-1">
-              <div className="inline-flex items-center gap-2 bg-accent/10 text-accent-dark font-semibold px-4 py-1.5 rounded-full text-sm mb-6">
+              <div className="inline-flex items-center gap-2 bg-accent/10 text-accent-dark font-semibold px-4 py-1.5 rounded-full text-sm mb-6 fade-up">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 4.8 Stars on Google
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-text tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-text tracking-tight fade-up">
                 Your Roof.
                 <br />
                 <span className="text-primary">Our Reputation.</span>
               </h1>
-              <p className="mt-6 text-lg sm:text-xl text-text-light leading-relaxed max-w-xl">
-                Lakewood&apos;s trusted roofing contractor since 2013. From free inspections to expert installations, we protect what matters most -- your home.
+              <p className="mt-6 text-lg sm:text-xl text-text-light leading-relaxed max-w-xl fade-up">
+                Lakewood&apos;s trusted roofing contractor since 2013. From free inspections to expert installations, we protect what matters most — your home.
               </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 fade-up">
                 <a
                   href={PHONE_HREF}
                   className="inline-flex items-center justify-center gap-2.5 bg-accent hover:bg-accent-dark text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5"
@@ -408,16 +397,20 @@ export default function Home() {
                   </svg>
                 </button>
               </div>
-              <div className="mt-8 flex items-center gap-3 text-sm text-text-light">
-                <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>
-                Licensed &amp; Insured &bull; Free Inspections &bull; 10-Year Warranty
+              <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-text-light fade-up">
+                {["Licensed & Insured", "Free Inspections", "10-Year Warranty"].map((badge) => (
+                  <span key={badge} className="inline-flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full shadow-sm">
+                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                    </svg>
+                    {badge}
+                  </span>
+                ))}
               </div>
             </div>
 
             {/* Right: Hero Image */}
-            <div className="order-1 lg:order-2 relative">
+            <div className="order-1 lg:order-2 relative fade-up">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
                 <Image
                   src="/hero.png"
@@ -439,12 +432,12 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ STAT BAR ═══════════════ */}
-      <section ref={statsRef} className="fade-up bg-primary py-10 sm:py-14">
+      <section className="bg-primary py-10 sm:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center stagger-children">
             {STATS.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
+              <div key={stat.label} className="fade-up">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-accent">
                   {stat.value}
                 </p>
                 <p className="mt-1 text-sm sm:text-base text-white/70 font-medium">
@@ -457,26 +450,26 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ PROCESS TIMELINE ═══════════════ */}
-      <section id="process" ref={processRef} className="fade-up py-16 sm:py-24 bg-white">
+      <section id="process" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
               How It Works
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
               A Roof Job Done{" "}
               <span className="text-primary">Right</span>
             </h2>
-            <p className="mt-4 text-lg text-text-light max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-text-light max-w-2xl mx-auto fade-up">
               From first call to final walkthrough, here&apos;s exactly what to expect when you work with Emgee.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
             {PROCESS_STEPS.map((step, i) => (
               <div
                 key={step.num}
-                className="relative bg-light rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 group"
+                className="relative bg-light rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 group fade-up"
               >
                 {/* Step number */}
                 <div className="absolute -top-4 left-6 bg-accent text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -498,25 +491,25 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ SERVICES GRID ═══════════════ */}
-      <section id="services" ref={servicesRef} className="fade-up py-16 sm:py-24 bg-light">
+      <section id="services" className="py-16 sm:py-24 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
               What We Do
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
               Our <span className="text-primary">Services</span>
             </h2>
-            <p className="mt-4 text-lg text-text-light max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-text-light max-w-2xl mx-auto fade-up">
               Comprehensive exterior solutions for your home, delivered with craftsmanship and care.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 stagger-children">
             {SERVICES.map((svc) => (
               <div
                 key={svc.title}
-                className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group hover:-translate-y-1"
+                className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 fade-up"
               >
                 {/* Accent top bar */}
                 <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
@@ -537,34 +530,34 @@ export default function Home() {
       <section id="about" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="rounded-2xl overflow-hidden shadow-xl">
+            <div className="rounded-2xl overflow-hidden shadow-xl fade-up">
               <Image
                 src="/about.png"
-                alt="Emgee Contracting team in front of completed project"
+                alt="Emgee Contracting roofing crew at work"
                 width={650}
                 height={450}
                 className="w-full h-[300px] sm:h-[400px] lg:h-[450px] object-cover"
               />
             </div>
             <div>
-              <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+              <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
                 About Emgee
               </p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
                 Building Trust, <span className="text-primary">One Roof</span> at a Time
               </h2>
-              <p className="mt-6 text-text-light text-lg leading-relaxed">
+              <p className="mt-6 text-text-light text-lg leading-relaxed fade-up">
                 Since 2013, Emgee Contracting has been the name Lakewood homeowners
                 trust for roofing, siding, and exterior work. We started as a small
                 crew with big standards — and that hasn&apos;t changed.
               </p>
-              <p className="mt-4 text-text-light text-lg leading-relaxed">
+              <p className="mt-4 text-text-light text-lg leading-relaxed fade-up">
                 Every project gets the same treatment: honest estimates, quality
                 materials, skilled craftsmanship, and a final walkthrough to make
                 sure you&apos;re completely satisfied. We don&apos;t cut corners
                 because your home deserves better.
               </p>
-              <div className="mt-8 grid grid-cols-3 gap-6">
+              <div className="mt-8 grid grid-cols-3 gap-6 fade-up">
                 <div>
                   <p className="text-3xl sm:text-4xl font-extrabold text-accent">10+</p>
                   <p className="text-text-light text-sm mt-1">Years in Business</p>
@@ -574,16 +567,16 @@ export default function Home() {
                   <p className="text-text-light text-sm mt-1">Roofs Completed</p>
                 </div>
                 <div>
-                  <p className="text-3xl sm:text-4xl font-extrabold text-accent">4.7</p>
+                  <p className="text-3xl sm:text-4xl font-extrabold text-accent">4.8</p>
                   <p className="text-text-light text-sm mt-1">Star Rating</p>
                 </div>
               </div>
-              <div className="mt-8 flex items-center gap-3 bg-light rounded-xl p-4">
+              <div className="mt-8 flex items-center gap-3 bg-light rounded-xl p-4 fade-up">
                 <svg className="w-6 h-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
                 <p className="text-sm text-text-light">
-                  <span className="font-semibold text-text">NJ HIC# 13VH07668500</span> — Fully licensed and insured in the State of New Jersey
+                  <span className="font-semibold text-text">NJ HIC# {LICENSE}</span> — Fully licensed and insured in the State of New Jersey
                 </p>
               </div>
             </div>
@@ -592,20 +585,20 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ GALLERY ═══════════════ */}
-      <section id="gallery" ref={galleryRef} className="fade-up py-16 sm:py-24 bg-light">
+      <section id="gallery" className="py-16 sm:py-24 bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
               Our Work
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
               Project <span className="text-primary">Gallery</span>
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-6 stagger-children">
             {GALLERY_ITEMS.map((item, i) => (
-              <div key={i} className="gallery-item aspect-[4/3] relative">
+              <div key={i} className="gallery-item aspect-[4/3] relative fade-up">
                 <Image
                   src={item.src}
                   alt={item.label}
@@ -623,22 +616,22 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ TESTIMONIALS ═══════════════ */}
-      <section id="reviews" ref={reviewsRef} className="fade-up py-16 sm:py-24 bg-light">
+      <section id="reviews" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
               What Our Clients Say
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
               Real <span className="text-primary">Reviews</span>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 stagger-children">
             {TESTIMONIALS.map((t) => (
               <div
                 key={t.name}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-lg transition-all duration-300"
+                className="bg-light rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-lg transition-all duration-300 fade-up"
               >
                 <Stars count={t.rating} />
                 <p className="mt-4 text-text-light leading-relaxed italic">
@@ -662,29 +655,30 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ FAQ ACCORDION (SIGNATURE) ═══════════════ */}
-      <section id="faq" ref={faqRef} className="fade-up py-16 sm:py-24 bg-white">
+      <section id="faq" className="py-16 sm:py-24 bg-light">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3">
+            <p className="text-accent font-semibold uppercase tracking-wider text-sm mb-3 fade-up">
               Common Questions
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text fade-up">
               Got <span className="text-primary">Questions?</span>
             </h2>
-            <p className="mt-4 text-lg text-text-light">
+            <p className="mt-4 text-lg text-text-light fade-up">
               We&apos;ve got answers. Here are the most common things homeowners ask us.
             </p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-children">
             {FAQ_ITEMS.map((item, i) => (
               <div
                 key={i}
-                className="border border-gray-200 rounded-xl overflow-hidden hover:border-primary/30 transition-colors"
+                className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/30 transition-colors fade-up"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between px-6 py-5 text-left group"
+                  aria-expanded={openFaq === i}
                 >
                   <span className="font-semibold text-text pr-4 group-hover:text-primary transition-colors">
                     {item.q}
@@ -715,19 +709,19 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ CTA SECTION ═══════════════ */}
-      <section id="contact" ref={ctaRef} className="fade-up relative py-16 sm:py-24 bg-primary overflow-hidden">
+      <section id="contact" className="relative py-16 sm:py-24 bg-primary overflow-hidden">
         {/* Decorative circles */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight fade-up">
             Ready to Protect Your Home?
           </h2>
-          <p className="mt-4 text-lg sm:text-xl text-white/80 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg sm:text-xl text-white/80 max-w-2xl mx-auto fade-up">
             Get a free, no-obligation roof inspection and detailed estimate. One call is all it takes.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 fade-up">
             <a
               href={PHONE_HREF}
               className="inline-flex items-center gap-3 bg-accent hover:bg-accent-dark text-white font-bold px-10 py-5 rounded-xl text-lg transition-all duration-200 shadow-xl shadow-black/20 hover:-translate-y-0.5"
@@ -747,7 +741,7 @@ export default function Home() {
               Email Us
             </a>
           </div>
-          <p className="mt-6 text-white/60 text-sm">
+          <p className="mt-6 text-white/60 text-sm fade-up">
             Mon-Thu 7am-6pm &bull; Fri 7am-1pm &bull; Sun by appointment
           </p>
         </div>
