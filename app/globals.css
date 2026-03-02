@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #8B4513;
+  --primary-light: #A0522D;
+  --primary-dark: #6B3410;
+  --accent: #D97706;
+  --accent-light: #F59E0B;
+  --accent-dark: #B45309;
+  --light: #FDF8F0;
+  --text: #3D2B1F;
+  --text-light: #6B5B4E;
+  --background: #ffffff;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-dark: var(--accent-dark);
+  --color-light: var(--light);
+  --color-text: var(--text);
+  --color-text-light: var(--text-light);
+  --color-bg: var(--background);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-inter);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* No-JS fallback: content visible by default */
+.fade-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* When JS has loaded and added the class, start hidden for animation */
+.js-loaded .fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.js-loaded .fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children delays */
+.stagger-children > .fade-up:nth-child(1) { transition-delay: 0ms; }
+.stagger-children > .fade-up:nth-child(2) { transition-delay: 100ms; }
+.stagger-children > .fade-up:nth-child(3) { transition-delay: 200ms; }
+.stagger-children > .fade-up:nth-child(4) { transition-delay: 300ms; }
+.stagger-children > .fade-up:nth-child(5) { transition-delay: 400ms; }
+.stagger-children > .fade-up:nth-child(6) { transition-delay: 500ms; }
+.stagger-children > .fade-up:nth-child(7) { transition-delay: 600ms; }
+.stagger-children > .fade-up:nth-child(8) { transition-delay: 700ms; }
+
+/* FAQ accordion animation */
+.faq-answer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.faq-answer.open {
+  max-height: 300px;
+  opacity: 1;
+  padding-top: 16px;
+  padding-bottom: 4px;
+}
+
+/* Gallery hover overlay */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.gallery-item img {
+  transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(62, 39, 35, 0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.gallery-item:hover::after {
+  opacity: 1;
+}
+
+.gallery-label {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Chevron rotation for FAQ */
+.faq-chevron {
+  transition: transform 0.3s ease;
+}
+
+.faq-chevron.rotated {
+  transform: rotate(180deg);
+}
